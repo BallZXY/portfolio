@@ -262,8 +262,19 @@
       z-index: 99999;
 
       transform: translateX(100%);
-      transition: transform 0.4s ease;
+      /* 🔴 ซ่อนออกไปนอกจอ */
+      transition: transform 0.3s ease;
+      pointer-events: none;
+      /* 🔴 กันบังคลิก */
+      overflow-y: auto;
     }
+
+    .mobile-menu.open {
+      transform: translateX(0);
+      /* ✅ เลื่อนเข้า */
+      pointer-events: auto;
+    }
+
 
     /* เปิดเมนู */
     .mobile-menu.open {
@@ -394,11 +405,13 @@
     </div>
 
     <ul class="mobile-menu-list">
-      <li><a href="#about">About Me</a></li>
-      <li><a href="#achievements">Achievements</a></li>
-      <li><a href="#contact">Contact</a></li>
+      <li><a href="#" data-section="about">About Me</a></li>
+      <li><a href="#" data-section="achievements">Achievements</a></li>
+      <li><a href="#" data-section="contact">Contact</a></li>
     </ul>
-  </div>
+  </div> <!-- ✅ ปิดตรงนี้ -->
+
+
 
 
 
@@ -1058,22 +1071,43 @@
     // เปิดเมนู
     hamburger.addEventListener("click", () => {
       mobileMenu.classList.add("open");
-      document.body.style.overflow = "hidden";
+      document.body.style.overflow = "hidden"; // 🔑 สำคัญ
     });
+
 
     // ปิดเมนู
     closeMenu.addEventListener("click", () => {
-      mobileMenu.classList.remove("open");
-      document.body.style.overflow = "";
+      closeMobileMenu();
     });
 
-    // กดเมนูแล้วปิด
+    // ฟังก์ชันปิดเมนู
+    function closeMobileMenu() {
+      mobileMenu.classList.remove("open");
+      document.body.style.overflow = ""; // 🔑 คืนค่า
+    }
+
+
+    // กดเมนูแล้วเลื่อนไป section + ปิดเมนู
     document.querySelectorAll(".mobile-menu a").forEach(link => {
-      link.addEventListener("click", () => {
-        mobileMenu.classList.remove("open");
-        document.body.style.overflow = "";
+      link.addEventListener("click", (e) => {
+        e.preventDefault();
+
+        const sectionId = link.dataset.section;
+
+        if (content.style.display !== "block") {
+          goPortfolio();
+        }
+
+        closeMobileMenu();
+        showSection(sectionId);
+
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth"
+        });
       });
     });
+
 
 
 
