@@ -335,6 +335,20 @@
         display: none;
       }
     }
+
+    /* ===== MODAL FIX ===== */
+    .work-modal {
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(0.98);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+
+    .work-modal.open {
+      opacity: 1;
+      pointer-events: auto;
+      transform: scale(1);
+    }
   </style>
 </head>
 
@@ -817,7 +831,7 @@
   </main>
 
   <!-- ================= MODAL ================= -->
-  <div id="work-modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center px-6">
+  <div id="work-modal" class="work-modal fixed inset-0 bg-black/80 z-50 flex items-center justify-center px-6">
     <div class="glass max-w-4xl w-full p-8 rounded-2xl relative">
 
       <button onclick="closeWork()" class="absolute top-4 right-4 text-xl">✕</button>
@@ -1006,27 +1020,33 @@
     let order = []
 
     function openWork(index) {
-      currentWork = works[index]
+      currentWork = works[index];
 
-      modal.querySelector('h3').textContent = currentWork.title
-      modal.querySelector('p').textContent = currentWork.description
+      modal.querySelector('h3').textContent = currentWork.title;
+      modal.querySelector('p').textContent = currentWork.description;
 
-      const ul = modal.querySelector('ul')
-      ul.innerHTML = ""
+      const ul = modal.querySelector('ul');
+      ul.innerHTML = "";
       currentWork.rewards.forEach(r => {
-        ul.innerHTML += `<li>${r}</li>`
-      })
+        ul.innerHTML += `<li>${r}</li>`;
+      });
 
-      order = [0, 1, 2]
-      renderImages()
+      order = [0, 1, 2];
+      renderImages();
 
-      modal.classList.remove('hidden')
+      modal.classList.add('open');            // ✅ เปิด
+      document.body.style.overflow = "hidden";
     }
 
     function closeWork() {
-      modal.classList.add('hidden')
-    }
+      modal.classList.remove('open');
+      document.body.style.overflow = "";
 
+      // 🔑 เคลียร์รูป ป้องกันค้าง
+      mainImg.src = "";
+      leftImg.src = "";
+      rightImg.src = "";
+    }
     function renderImages() {
       leftImg.src = currentWork.images[order[0]]
       mainImg.src = currentWork.images[order[1]]
