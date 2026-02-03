@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Portfolio | Natee Youngsabai</title>
   <link rel="icon" sizes="540x540" href="Logo.png">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
   <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -19,6 +20,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Playfair+Display:wght@600;700;800&display=swap"
     rel="stylesheet">
+
 
   <style>
     body {
@@ -37,10 +39,6 @@
 
     .hero-btn:hover {
       box-shadow: 0 20px 60px rgba(255, 255, 255, .4);
-    }
-
-    body {
-      font-family: 'Kanit', sans-serif;
     }
 
     .glass {
@@ -199,6 +197,133 @@
       opacity: 1;
       transform: translateY(0);
     }
+
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 40px;
+    }
+
+    /* ===== NAV ===== */
+    .nav-links {
+      display: flex;
+      gap: 30px;
+    }
+
+    /* ☰ */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+      cursor: pointer;
+      z-index: 60;
+      /* 🔑 สำคัญ */
+      position: relative;
+    }
+
+    .hamburger span {
+      width: 25px;
+      height: 3px;
+      background: #fff;
+      border-radius: 5px;
+    }
+
+    /* 📱 Mobile */
+    @media (max-width: 768px) {
+      .nav-links {
+        position: absolute;
+        top: 80px;
+        right: 20px;
+        background: #111827;
+        flex-direction: column;
+        gap: 20px;
+        padding: 20px;
+        border-radius: 16px;
+        display: none;
+        z-index: 55;
+        /* 🔑 ต่ำกว่า hamburger */
+      }
+
+      .nav-links.active {
+        display: flex;
+      }
+
+      .hamburger {
+        display: flex;
+      }
+    }
+
+    /* ===== Fullscreen Mobile Menu ===== */
+    .mobile-menu {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(180deg, #0b0f1a, #0e1430);
+      z-index: 99999;
+
+      transform: translateX(100%);
+      transition: transform 0.4s ease;
+    }
+
+    /* เปิดเมนู */
+    .mobile-menu.open {
+      transform: translateX(0);
+    }
+
+    /* Header */
+    .mobile-menu-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 24px;
+    }
+
+    /* Title */
+    .menu-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    /* ปุ่มปิด */
+    .close-menu {
+      all: unset;
+      /* กัน CSS เดิมทับ */
+      cursor: pointer;
+      font-size: 30px;
+      line-height: 1;
+      color: #ffffff;
+    }
+
+    /* รายการเมนู */
+    .mobile-menu-list {
+      list-style: none;
+      padding: 40px 24px;
+    }
+
+    .mobile-menu-list li {
+      margin-bottom: 28px;
+    }
+
+    .mobile-menu-list a {
+      text-decoration: none;
+      font-size: 24px;
+      font-weight: 500;
+      color: #ffffff;
+      opacity: 0.9;
+      transition: opacity 0.2s;
+    }
+
+    .mobile-menu-list a:hover {
+      opacity: 1;
+    }
+
+    /* Desktop ไม่ต้องเห็น */
+    @media (min-width: 768px) {
+      .mobile-menu {
+        display: none;
+      }
+    }
   </style>
 </head>
 
@@ -239,18 +364,44 @@
 
   <!-- ================= NAV ================= -->
   <nav id="nav"
-    class="hidden fixed top-0 w-full bg-[#0b0e1a]/80 backdrop-blur z-50 px-12 py-6 flex justify-between items-center">
+    class="fixed top-0 w-full bg-[#0b0e1a]/80 backdrop-blur z-50 px-12 py-6 flex justify-between items-center"
+    style="display:none">
 
     <div onclick="goHome()" class="font-extrabold text-2xl cursor-pointer">
       Portfolio
     </div>
 
-    <div class="flex gap-8 text-base font-medium">
+    <div class="nav-links gap-8 text-base font-medium">
       <button onclick="showSection('about')">About Me</button>
       <button onclick="showSection('achievements')">Achievements</button>
       <button onclick="showSection('contact')">Contact</button>
     </div>
+
+    <!-- ☰ ต้องอยู่ตรงนี้ -->
+    <div class="hamburger" id="hamburger">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+
   </nav>
+
+  <!-- Mobile Fullscreen Menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <div class="mobile-menu-header">
+      <span class="menu-title">Menu</span>
+      <button class="close-menu" id="closeMenu">✕</button>
+    </div>
+
+    <ul class="mobile-menu-list">
+      <li><a href="#about">About Me</a></li>
+      <li><a href="#achievements">Achievements</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+
+
+
 
   <!-- ================= CONTENT ================= -->
   <main id="content" class="hidden pt-20 max-w-6xl mx-auto px-8 space-y-0">
@@ -693,10 +844,15 @@
 
     </div>
   </div>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   <!-- “การแข่งขันรายการ สิ่งประดิษฐ์คนรุ่นใหม่’’ -->
   <!-- ================= SCRIPT ================= -->
   <script>
     /* ================= BASIC NAV ================= */
+    const home = document.getElementById('home')
+    const nav = document.getElementById('nav')
+    const content = document.getElementById('content')
+
     function goPortfolio() {
       home.style.display = 'none'
       nav.style.display = 'flex'
@@ -879,18 +1035,45 @@
       }, 200)
     }
 
-    const reveal = document.querySelector('.reveal');
+    const reveals = document.querySelectorAll(".reveal");
 
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          reveal.classList.add('active');
-        }
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("active");
+            observer.unobserve(entry.target);
+          }
+        });
       },
       { threshold: 0.2 }
     );
 
-    observer.observe(reveal);
+    reveals.forEach(el => observer.observe(el));
+
+    const hamburger = document.getElementById("hamburger");
+    const mobileMenu = document.getElementById("mobileMenu");
+    const closeMenu = document.getElementById("closeMenu");
+
+    // เปิดเมนู
+    hamburger.addEventListener("click", () => {
+      mobileMenu.classList.add("open");
+      document.body.style.overflow = "hidden";
+    });
+
+    // ปิดเมนู
+    closeMenu.addEventListener("click", () => {
+      mobileMenu.classList.remove("open");
+      document.body.style.overflow = "";
+    });
+
+    // กดเมนูแล้วปิด
+    document.querySelectorAll(".mobile-menu a").forEach(link => {
+      link.addEventListener("click", () => {
+        mobileMenu.classList.remove("open");
+        document.body.style.overflow = "";
+      });
+    });
 
 
 
